@@ -1,53 +1,75 @@
 import java.util.Scanner;
 
-class SinhVien {
-    private String maSV;
-    private String hoTen;
-    private String ngaySinh;
+abstract class SinhVien {
+    protected String maSV;
+    protected String maHe;
+    protected int soTinChi;
 
-    public SinhVien(String maSV, String hoTen, String ngaySinh) {
-        this.maSV = maSV.trim();
-        this.hoTen = chuanHoaTen(hoTen);
-        this.ngaySinh = chuanHoaNgaySinh(ngaySinh);
+    public SinhVien(String maSV, String maHe, int soTinChi) {
+        this.maSV = maSV;
+        this.maHe = maHe;
+        this.soTinChi = soTinChi;
     }
 
-    private String chuanHoaTen(String s) {
-        String[] words = s.trim().toLowerCase().split("\\s+");
-        String res = "";
-        for (int i = 0; i < words.length; i++) {
-            res += Character.toUpperCase(words[i].charAt(0)) + words[i].substring(1);
-            if (i < words.length - 1) {
-                res += " ";
-            }
-        }
-        return res;
-    }
-
-    private String chuanHoaNgaySinh(String s) {
-        String[] parts = s.trim().split("/");
-        String d = parts[0].length() == 1 ? "0" + parts[0] : parts[0];
-        String m = parts[1].length() == 1 ? "0" + parts[1] : parts[1];
-        String y = parts[2];
-        return d + "/" + m + "/" + y;
-    }
+    public abstract long hocPhi();
 
     @Override
     public String toString() {
-        return maSV + " " + hoTen + " " + ngaySinh;
+        return maSV + " " + maHe + " " + hocPhi();
+    }
+}
+
+class SinhVienCQ extends SinhVien {
+    public SinhVienCQ(String maSV, String maHe, int soTinChi) {
+        super(maSV, maHe, soTinChi);
+    }
+
+    @Override
+    public long hocPhi() {
+        return soTinChi * 450000L;
+    }
+}
+
+class SinhVienCLC extends SinhVien {
+    public SinhVienCLC(String maSV, String maHe, int soTinChi) {
+        super(maSV, maHe, soTinChi);
+    }
+
+    @Override
+    public long hocPhi() {
+        return (long) (soTinChi * 450000L * 1.5);
+    }
+}
+
+class SinhVienLT extends SinhVien {
+    public SinhVienLT(String maSV, String maHe, int soTinChi) {
+        super(maSV, maHe, soTinChi);
+    }
+
+    @Override
+    public long hocPhi() {
+        return soTinChi * 450000L + 2000000L;
     }
 }
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int n = Integer.parseInt(sc.nextLine().trim());
+        int n = sc.nextInt();
         SinhVien[] ds = new SinhVien[n + 1];
 
         for (int i = 1; i <= n; i++) {
-            String ma = sc.nextLine();
-            String ten = sc.nextLine();
-            String ns = sc.nextLine();
-            ds[i] = new SinhVien(ma, ten, ns);
+            String maHe = sc.next();
+            String maSV = sc.next();
+            int soTinChi = sc.nextInt();
+
+            if (maHe.equals("CQ")) {
+                ds[i] = new SinhVienCQ(maSV, maHe, soTinChi);
+            } else if (maHe.equals("CLC")) {
+                ds[i] = new SinhVienCLC(maSV, maHe, soTinChi);
+            } else {
+                ds[i] = new SinhVienLT(maSV, maHe, soTinChi);
+            }
         }
 
         for (int i = 1; i <= n; i++) {
